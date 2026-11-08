@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NEXORA — One ecosystem. Every connection.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%232563EB'/%3E%3Cstop offset='1' stop-color='%238B5CF6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M18 46V18h6l16 20V18h6v28h-6L24 26v20z' fill='white'/%3E%3Ccircle cx='18' cy='18' r='3' fill='%2306B6D4'/%3E%3Ccircle cx='46' cy='46' r='3' fill='%2306B6D4'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F5F7FB;
+  --white:#FFFFFF;
+  --blue:#2563EB;
+  --blue2:#3B82F6;
+  --cyan:#06B6D4;
+  --violet:#8B5CF6;
+  --ink:#172033;
+  --muted:#64748B;
+  --muted2:#94A3B8;
+  --success:#16A34A;
+  --warn:#F59E0B;
+  --err:#EF4444;
+  --radius:20px;
+  --radius-sm:14px;
+  --shadow:0 20px 50px rgba(31,45,90,.08), 0 2px 8px rgba(31,45,90,.04);
+  --glass-bg:linear-gradient(135deg, rgba(255,255,255,.78), rgba(255,255,255,.52));
+  --glass-border:1px solid rgba(255,255,255,.7);
+  --glass-blur:blur(24px) saturate(150%);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:var(--ink);
+  background:var(--bg);
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.heading{font-family:'Space Grotesk',system-ui,sans-serif;letter-spacing:-.02em}
+.num{font-variant-numeric:tabular-nums}
+
+/* animated background blobs */
+.bg-blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;animation:float 18s ease-in-out infinite}
+.blob.b1{width:520px;height:520px;background:radial-gradient(circle,#3B82F6,transparent 70%);top:-120px;left:-120px}
+.blob.b2{width:480px;height:480px;background:radial-gradient(circle,#8B5CF6,transparent 70%);bottom:-140px;right:-100px;animation-delay:-6s}
+.blob.b3{width:420px;height:420px;background:radial-gradient(circle,#06B6D4,transparent 70%);top:40%;left:50%;animation-delay:-12s;opacity:.35}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.08)}}
+
+.glass{background:var(--glass-bg);border:var(--glass-border);box-shadow:var(--shadow);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-radius:var(--radius)}
+.glass-sm{border-radius:var(--radius-sm)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;border:1px solid transparent;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s ease;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;box-shadow:0 8px 24px rgba(37,99,235,.25)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(37,99,235,.32)}
+.btn.ghost{background:rgba(255,255,255,.6);color:var(--ink);border:1px solid rgba(255,255,255,.7);box-shadow:none;backdrop-filter:blur(12px)}
+.btn.ghost:hover{background:rgba(255,255,255,.85)}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:10px}
+.btn.icon{padding:9px;border-radius:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(8px)}
+.chip.blue{color:var(--blue);background:rgba(37,99,235,.08)}
+.chip.green{color:var(--success);background:rgba(22,163,74,.1)}
+.chip.amber{color:var(--warn);background:rgba(245,158,11,.1)}
+.chip.red{color:var(--err);background:rgba(239,68,68,.1)}
+.chip.gray{color:var(--muted);background:rgba(100,116,139,.1)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot.green{background:var(--success)} .dot.blue{background:var(--blue2)} .dot.amber{background:var(--warn)} .dot.gray{background:var(--muted2)} .dot.red{background:var(--err)}
+
+/* layout */
+#appView{display:none;position:relative;z-index:1}
+#landingView{position:relative;z-index:1}
+.app-shell{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;padding:20px 16px;display:flex;flex-direction:column;gap:18px;background:rgba(255,255,255,.55);backdrop-filter:blur(30px);border-right:1px solid rgba(255,255,255,.6)}
+.sidebar .brand{display:flex;align-items:center;gap:11px;padding:6px 8px}
+.sidebar .brand .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--violet));display:grid;place-items:center;box-shadow:0 8px 20px rgba(37,99,235,.25)}
+.sidebar .brand .name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px}
+.sidebar .brand .tag{font-size:11px;color:var(--muted);margin-top:-2px}
+.nav-section{font-size:11px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.08em;padding:4px 10px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .18s ease}
+.nav-item:hover{background:rgba(255,255,255,.6);color:var(--ink)}
+.nav-item.active{background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(139,92,246,.1));color:var(--blue);font-weight:600}
+.nav-item svg{width:18px;height:18px;flex-shrink:0}
+.sidebar .profile{margin-top:auto;padding:12px;border-radius:14px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7);display:flex;align-items:center;gap:10px}
+.profile .avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--blue));display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px}
+.profile .pname{font-weight:600;font-size:13px}
+.profile .prole{font-size:11px;color:var(--muted)}
+
+.main{padding:24px 32px 40px;position:relative}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:16px;flex-wrap:wrap}
+.topbar .title{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700}
+.topbar .subtitle{font-size:13px;color:var(--muted);margin-top:2px}
+.topbar .actions{display:flex;align-items:center;gap:10px}
+.searchbox{display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:12px;background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(12px);min-width:260px}
+.searchbox input{border:none;background:transparent;outline:none;font-size:14px;color:var(--ink);width:100%}
+.searchbox svg{width:16px;height:16px;color:var(--muted)}
+
+.grid{display:grid;gap:18px}
+.grid.cols-4{grid-template-columns:repeat(4,1fr)}
+.grid.cols-3{grid-template-columns:repeat(3,1fr)}
+.grid.cols-2{grid-template-columns:repeat(2,1fr)}
+.grid.cols-6{grid-template-columns:repeat(6,1fr)}
+
+.card{padding:20px}
+.card h3{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin:0 0 4px}
+.card .meta{font-size:12px;color:var(--muted)}
+
+.metric{display:flex;flex-direction:column;gap:6px}
+.metric .val{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-.02em}
+.metric .lbl{font-size:13px;color:var(--muted);font-weight:500}
+.metric .delta{font-size:12px;font-weight:600}
+.metric .iconwrap{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;margin-bottom:6px}
+
+/* landing */
+.landing{max-width:1200px;margin:0 auto;padding:24px 32px 60px}
+.lnav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+.lnav .brand{display:flex;align-items:center;gap:11px}
+.lnav .links{display:flex;gap:28px;font-size:14px;font-weight:500;color:var(--muted)}
+.lnav .links a{cursor:pointer;transition:color .2s}
+.lnav .links a:hover{color:var(--ink)}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;padding:60px 0 40px}
+.hero h1{font-size:62px;line-height:1.05;margin:0 0 18px;background:linear-gradient(135deg,var(--ink),var(--blue),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:18px;color:var(--muted);line-height:1.6;max-width:520px}
+.hero .ctas{display:flex;gap:12px;margin-top:28px}
+.network{position:relative;height:360px;border-radius:28px;background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(139,92,246,.08));border:1px solid rgba(255,255,255,.7);overflow:hidden}
+.network svg{width:100%;height:100%}
+.section{padding:60px 0}
+.section h2{font-size:34px;margin:0 0 10px}
+.section .sub{color:var(--muted);font-size:16px;margin-bottom:32px}
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.feat{padding:24px}
+.feat .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;margin-bottom:14px;background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(139,92,246,.12))}
+.feat h4{margin:0 0 6px;font-family:'Space Grotesk',sans-serif;font-size:17px}
+.feat p{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.how .step{padding:20px;text-align:center}
+.how .n{width:36px;height:36px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;font-weight:700;font-size:14px}
+.footer{text-align:center;padding:40px 0 10px;color:var(--muted);font-size:13px;border-top:1px solid rgba(255,255,255,.6);margin-top:40px}
+
+/* tables */
+.table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.table th{font-size:12px;color:var(--muted);font-weight:600;text-align:left;padding:0 14px 6px;text-transform:uppercase;letter-spacing:.05em}
+.table td{padding:12px 14px;background:rgba(255,255,255,.6);backdrop-filter:blur(8px);font-size:13px}
+.table tr td:first-child{border-radius:12px 0 0 12px}
+.table tr td:last-child{border-radius:0 12px 12px 0}
+.table tbody tr{transition:transform .15s}
+.table tbody tr:hover{transform:translateX(2px)}
+
+/* filters */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.select,.input{padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.7);backdrop-filter:blur(8px);font-size:13px;color:var(--ink);outline:none;min-width:130px}
+.select:focus,.input:focus{border-color:var(--blue2)}
+.label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;display:block}
+
+/* room cards */
+.room-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.room-card{padding:18px;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.room-card:hover{transform:translateY(-3px);box-shadow:0 24px 50px rgba(31,45,90,.12)}
+.room-card .head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.room-card .rnum{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700}
+.room-card .rmeta{font-size:12px;color:var(--muted);margin-top:2px}
+.room-card .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:11px;padding:3px 9px;border-radius:999px;background:rgba(37,99,235,.07);color:var(--blue);font-weight:500}
+.room-card .cap{display:flex;align-items:center;gap:8px;margin-top:12px}
+.bar{height:6px;border-radius:999px;background:rgba(100,116,139,.15);overflow:hidden;flex:1}
+.bar .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+
+/* modal */
+.modal-back{position:fixed;inset:0;background:rgba(15,23,42,.35);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-back.open{display:flex}
+.modal{max-width:620px;width:100%;max-height:90vh;overflow:auto;padding:28px;border-radius:24px}
+.modal h3{font-size:22px;margin:0 0 4px}
+.modal .close{position:absolute;top:18px;right:18px;cursor:pointer;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.7);border-radius:10px;padding:6px 10px;font-size:13px}
+
+/* toast */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:200;display:flex;flex-direction:column;gap:10px}
+.toast{padding:14px 18px;border-radius:14px;background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.7);box-shadow:var(--shadow);font-size:14px;min-width:260px;animation:slidein .3s ease}
+@keyframes slidein{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* camera */
+.cam-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cam-card{padding:0;overflow:hidden;cursor:pointer;transition:transform .2s}
+.cam-card:hover{transform:translateY(-3px)}
+.cam-preview{height:130px;position:relative;background:linear-gradient(135deg,#dbeafe,#e0e7ff);display:grid;place-items:center;overflow:hidden}
+.cam-preview .scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(37,99,235,.04) 2px 4px)}
+.cam-preview .dotmove{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--blue);opacity:.7;animation:drift 4s linear infinite}
+@keyframes drift{0%{transform:translate(0,0)}100%{transform:translate(120px,60px)}}
+.cam-body{padding:14px}
+.cam-id{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px}
+.cam-loc{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* segmented */
+.seg{display:inline-flex;padding:4px;border-radius:12px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(8px)}
+.seg button{padding:8px 16px;border:none;background:transparent;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s}
+.seg button.active{background:#fff;color:var(--blue);box-shadow:0 4px 12px rgba(31,45,90,.08)}
+
+/* mobile */
+.hamburger{display:none;position:fixed;top:14px;left:14px;z-index:60;padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.8);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.7);cursor:pointer}
+@media(max-width:900px){
+  .app-shell{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:0;top:0;height:100vh;transform:translateX(-100%);transition:transform .25s;z-index:50;width:260px}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:block}
+  .main{padding:60px 16px 40px}
+  .grid.cols-4,.grid.cols-3,.grid.cols-6{grid-template-columns:repeat(2,1fr)}
+  .room-grid,.cam-grid,.feature-grid{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr}
+  .hero h1{font-size:44px}
+  .how{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+  .grid.cols-4,.grid.cols-3,.grid.cols-2,.grid.cols-6{grid-template-columns:1fr}
+  .how{grid-template-columns:1fr}
+}
+
+/* misc */
+.kbd{font-size:11px;padding:2px 7px;border-radius:6px;background:rgba(100,116,139,.12);color:var(--muted);font-weight:600}
+.sim-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(245,158,11,.12);color:#92400e;font-size:11px;font-weight:700;letter-spacing:.04em}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty .big{font-size:40px;margin-bottom:8px}
+.chart-wrap{position:relative}
+svg.chart{width:100%;height:220px}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap;margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .sw{width:10px;height:10px;border-radius:3px}
+.map-wrap{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+@media(max-width:900px){.map-wrap{grid-template-columns:1fr}}
+.map-svg{border-radius:20px;overflow:hidden}
+.map-svg svg{width:100%;height:420px;display:block}
+.building{cursor:pointer;transition:transform .2s}
+.building:hover{transform:scale(1.02)}
+</style>
+</head>
+<body>
+<div class="bg-blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<!-- LANDING -->
+<div id="landingView">
+  <div class="landing">
+    <nav class="lnav">
+      <div class="brand">
+        <div class="logo" style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#2563EB,#8B5CF6);display:grid;place-items:center;box-shadow:0 8px 20px rgba(37,99,235,.25)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 18V6h2l6 8V6h2v12h-2l-6-8v8z" fill="white"/></svg>
+        </div>
+        <div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px">NEXORA</div><div style="font-size:11px;color:#64748B">One ecosystem. Every connection.</div></div>
+      </div>
+      <div class="links">
+        <a data-action="scroll" data-target="features">Platform</a>
+        <a data-action="scroll" data-target="features">Features</a>
+        <a data-action="scroll" data-target="about">About</a>
+        <a class="btn sm" data-action="enterApp">Explore Demo</a>
+      </div>
+    </nav>
+    <section class="hero">
+      <div>
+        <span class="chip blue">Northstar University • Simulated Demo</span>
+        <h1>Your Campus.<br>Connected.</h1>
+        <p>Discover spaces. Connect people. Understand infrastructure. NEXORA brings your entire campus into one intelligent ecosystem.</p>
+        <div class="ctas">
+          <button class="btn" data-action="enterApp">Explore Platform</button>
+          <button class="btn ghost" data-action="scroll" data-target="features">Discover Features</button>
+        </div>
+      </div>
+      <div class="network">
+        <svg viewBox="0 0 400 360" fill="none">
+          <defs>
+            <radialGradient id="n1" cx="50%" cy="50%"><stop offset="0" stop-color="#3B82F6" stop-opacity=".9"/><stop offset="1" stop-color="#3B82F6" stop-opacity="0"/></radialGradient>
+          </defs>
+          <!-- nodes -->
+          <g stroke="rgba(37,99,235,.25)" stroke-width="1.2">
+            <line x1="80" y1="90" x2="200" y2="180"/><line x1="320" y1="80" x2="200" y2="180"/>
+            <line x1="100" y1="260" x2="200" y2="180"/><line x1="300" y1="280" x2="200" y2="180"/>
+            <line x1="80" y1="90" x2="100" y2="260"/><line x1="320" y1="80" x2="300" y2="280"/>
+            <line x1="60" y1="180" x2="200" y2="180"/><line x1="340" y1="180" x2="200" y2="180"/>
+          </g>
+          <g>
+            <circle cx="200" cy="180" r="26" fill="url(#n1)"/>
+            <circle cx="200" cy="180" r="10" fill="#2563EB"/>
+            <circle cx="80" cy="90" r="9" fill="#06B6D4"/><circle cx="320" cy="80" r="9" fill="#8B5CF6"/>
+            <circle cx="100" cy="260" r="9" fill="#8B5CF6"/><circle cx="300" cy="280" r="9" fill="#06B6D4"/>
+            <circle cx="60" cy="180" r="7" fill="#2563EB"/><circle cx="340" cy="180" r="7" fill="#2563EB"/>
+          </g>
+          <text x="200" y="330" text-anchor="middle" font-family="Space Grotesk" font-size="13" fill="#64748B">People • Spaces • Infrastructure • Intelligence</text>
+        </svg>
+      </div>
+    </section>
+    <section id="features" class="section">
+      <h2>One platform. Every connection.</h2>
+      <p class="sub">Four pillars powering the campus intelligence layer.</p>
+      <div class="feature-grid">
+        <div class="glass feat"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><h4>Intelligent Space Discovery</h4><p>Find vacant classrooms, labs and meeting rooms in real time across campus.</p></div>
+        <div class="glass feat"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></div><h4>Unified People Locator</h4><p>Locate faculty and students through authorized, privacy-aware sharing.</p></div>
+        <div class="glass feat"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div><h4>AI Campus Vision</h4><p>Simulated occupancy intelligence from campus camera networks.</p></div>
+        <div class="glass feat"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div><h4>Smart Resource Management</h4><p>Book auditoriums, analyze utilization and optimize infrastructure.</p></div>
+      </div>
+    </section>
+    <section id="about" class="section">
+      <h2>How it works</h2>
+      <p class="sub">The relationship between people, spaces, infrastructure and intelligence.</p>
+      <div class="how">
+        <div class="glass step"><div class="n">1</div><h4 style="margin:0 0 6px;font-family:'Space Grotesk',sans-serif">People</h4><p style="font-size:13px;color:#64748B;margin:0">Students & faculty connect through authorized presence.</p></div>
+        <div class="glass step"><div class="n">2</div><h4 style="margin:0 0 6px;font-family:'Space Grotesk',sans-serif">Spaces</h4><p style="font-size:13px;color:#64748B;margin:0">Classrooms, labs, halls discovered in real time.</p></div>
+        <div class="glass step"><div class="n">3</div><h4 style="margin:0 0 6px;font-family:'Space Grotesk',sans-serif">Infrastructure</h4><p style="font-size:13px;color:#64748B;margin:0">Buildings and assets monitored for utilization.</p></div>
+        <div class="glass step"><div class="n">4</div><h4 style="margin:0 0 6px;font-family:'Space Grotesk',sans-serif">Intelligence</h4><p style="font-size:13px;color:#64748B;margin:0">Insights that optimize campus life.</p></div>
+      </div>
+    </section>
+    <div class="footer">NEXORA — One ecosystem. Every connection. • Northstar University • Simulated demonstration data.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appView">
+  <button class="hamburger" data-action="toggleSidebar">☰</button>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 18V6h2l6 8V6h2v12h-2l-6-8v8z" fill="white"/></svg></div>
+        <div><div class="name">NEXORA</div><div class="tag">One ecosystem. Every connection.</div></div>
+      </div>
+      <div>
+        <div class="nav-section">Campus Overview</div>
+        <div class="nav-item" data-page="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+        <div class="nav-item" data-page="map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>Campus Map · NexMap</div>
+        <div class="nav-item" data-page="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>Analytics · NexInsights</div>
+      </div>
+      <div>
+        <div class="nav-section">Space Intelligence</div>
+        <div class="nav-item" data-page="spaces"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Smart Space Finder · NexSpace</div>
+        <div class="nav-item" data-page="booking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Venue Booking · NexReserve</div>
+      </div>
+      <div>
+        <div class="nav-section">People Intelligence</div>
+        <div class="nav-item" data-page="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>People Availability</div>
+        <div class="nav-item" data-page="locator"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/></svg>People Locator · NexLocate</div>
+      </div>
+      <div>
+        <div class="nav-section">Campus Intelligence</div>
+        <div class="nav-item" data-page="vision"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Campus Vision · NexVision</div>
+      </div>
+      <div class="profile">
+        <div class="avatar">AD</div>
+        <div><div class="pname">Admin Demo</div><div class="prole">Northstar University</div></div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="title" id="pageTitle">Dashboard</div>
+          <div class="subtitle" id="pageSubtitle">Campus overview • Northstar University</div>
+        </div>
+        <div class="actions">
+          <div class="searchbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="globalSearch" placeholder="Search rooms, people, buildings..."/></div>
+          <span class="sim-badge">● SIMULATED DATA</span>
+          <button class="btn sm ghost" data-action="backLanding">Landing</button>
+        </div>
+      </div>
+      <div id="pageContent"></div>
+      <div style="margin-top:24px;font-size:12px;color:#94A3B8;text-align:center">NEXORA — One ecosystem. Every connection. • All records are simulated demonstration data.</div>
+    </main>
+  </div>
+</div>
+
+<div class="modal-back" id="modalBack"><div class="modal glass" id="modalContent" style="position:relative"></div></div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ===================== DATA =====================
+const BUILDINGS = [
+  {id:'A',name:'Block A – Administration',floors:5,facilities:['Registrar','IT Services','Career Center','Admin Offices'],color:'#2563EB',x:60,y:60,w:150,h:110},
+  {id:'B',name:'Block B – Electronics',floors:4,facilities:['Electronics Labs','Faculty Offices','Seminar Halls'],color:'#06B6D4',x:230,y:50,w:130,h:100},
+  {id:'C',name:'Block C – Computer Science',floors:6,facilities:['CS Labs','Lecture Halls','Student Commons'],color:'#8B5CF6',x:60,y:200,w:160,h:120},
+  {id:'D',name:'Block D – Laboratories',floors:3,facilities:['Physics Lab','Chemistry Lab','Bio Lab'],color:'#16A34A',x:240,y:190,w:140,h:110},
+  {id:'L',name:'Central Library',floors:4,facilities:['Reading Halls','Digital Media','Study Rooms'],color:'#F59E0B',x:400,y:80,w:120,h:130},
+  {id:'U',name:'University Auditorium',floors:2,facilities:['Main Auditorium','Mini Theatre','Conference Hall'],color:'#EF4444',x:400,y:230,w:130,h:90},
+  {id:'F',name:'Cafeteria & Commons',floors:2,facilities:['Cafeteria','Student Lounge','Health Center'],color:'#94A3B8',x:230,y:320,w:150,h:70},
+];
+const ROOMS = [
+  {id:'A101',num:'A-101',bld:'A',floor:1,type:'Classroom',cap:60,status:'Available',avail:'09:00–17:00',equip:['Projector','Whiteboard','AC'],occ:0},
+  {id:'A102',num:'A-102',bld:'A',floor:1,type:'Meeting Room',cap:12,status:'Reserved',avail:'14:00–16:00',equip:['TV','Whiteboard'],occ:0},
+  {id:'A201',num:'A-201',bld:'A',floor:2,type:'Classroom',cap:80,status:'Occupied',avail:'Busy until 12:30',equip:['Projector','Mic','AC'],occ:72},
+  {id:'A301',num:'A-301',bld:'A',floor:3,type:'Seminar Hall',cap:120,status:'Available',avail:'All day',equip:['Projector','Mic','AC','Recording'],occ:0},
+  {id:'B101',num:'B-101',bld:'B',floor:1,type:'Laboratory',cap:40,status:'Occupied',avail:'Busy until 11:00',equip:['Oscilloscope','Soldering','PCs'],occ:36},
+  {id:'B102',num:'B-102',bld:'B',floor:1,type:'Laboratory',cap:35,status:'Available',avail:'After 13:00',equip:['Microcontrollers','PCs'],occ:0},
+  {id:'B201',num:'B-201',bld:'B',floor:2,type:'Classroom',cap:50,status:'Available',avail:'All day',equip:['Projector','Whiteboard'],occ:0},
+  {id:'B202',num:'B-202',bld:'B',floor:2,type:'Study Room',cap:8,status:'Available',avail:'All day',equip:['Whiteboard'],occ:0},
+  {id:'C101',num:'C-101',bld:'C',floor:1,type:'Classroom',cap:90,status:'Occupied',avail:'Busy until 13:00',equip:['Projector','Mic','AC'],occ:84},
+  {id:'C102',num:'C-102',bld:'C',floor:1,type:'Classroom',cap:60,status:'Available',avail:'All day',equip:['Projector','Whiteboard','AC'],occ:0},
+  {id:'C201',num:'C-201',bld:'C',floor:2,type:'Laboratory',cap:45,status:'Available',avail:'After 12:00',equip:['PCs','Projector'],occ:0},
+  {id:'C204',num:'C-204',bld:'C',floor:2,type:'Classroom',cap:70,status:'Occupied',avail:'Busy until 14:00',equip:['Projector','Mic','AC'],occ:63},
+  {id:'C301',num:'C-301',bld:'C',floor:3,type:'Seminar Hall',cap:100,status:'Reserved',avail:'15:00–17:00',equip:['Projector','Mic','Recording'],occ:0},
+  {id:'C302',num:'C-302',bld:'C',floor:3,type:'Study Room',cap:10,status:'Available',avail:'All day',equip:['Whiteboard'],occ:0},
+  {id:'D101',num:'D-101',bld:'D',floor:1,type:'Laboratory',cap:30,status:'Occupied',avail:'Busy until 12:00',equip:['Microscopes','Fume hood'],occ:28},
+  {id:'D102',num:'D-102',bld:'D',floor:1,type:'Laboratory',cap:25,status:'Available',avail:'All day',equip:['Spectrometer','PCs'],occ:0},
+  {id:'D201',num:'D-201',bld:'D',floor:2,type:'Laboratory',cap:40,status:'Unavailable',avail:'Maintenance',equip:['HPC Cluster'],occ:0},
+  {id:'L101',num:'L-101',bld:'L',floor:1,type:'Study Room',cap:20,status:'Available',avail:'All day',equip:['WiFi','Power outlets'],occ:0},
+  {id:'L201',num:'L-201',bld:'L',floor:2,type:'Study Room',cap:16,status:'Occupied',avail:'Busy until 16:00',equip:['WiFi','Quiet zone'],occ:14},
+  {id:'L301',num:'L-301',bld:'L',floor:3,type:'Meeting Room',cap:10,status:'Available',avail:'All day',equip:['TV','Whiteboard'],occ:0},
+  {id:'U001',num:'U-MAIN',bld:'U',floor:1,type:'Auditorium',cap:800,status:'Reserved',avail:'18:00–21:00 event',equip:['Stage','AV','Lighting'],occ:0},
+  {id:'U002',num:'U-MINI',bld:'U',floor:1,type:'Auditorium',cap:220,status:'Available',avail:'All day',equip:['Projector','Sound'],occ:0},
+  {id:'U003',num:'U-CONF',bld:'U',floor:2,type:'Meeting Room',cap:60,status:'Available',avail:'All day',equip:['VC','Projector'],occ:0},
+];
+const VENUES = [
+  {id:'V1',name:'Main Auditorium',bld:'U',cap:800,fac:['Stage','AV system','Lighting rig','Green room'],rate:'Premium'},
+  {id:'V2',name:'Mini Theatre',bld:'U',cap:220,fac:['Projector','Surround sound'],rate:'Standard'},
+  {id:'V3',name:'Conference Hall B',bld:'U',cap:60,fac:['VC setup','Projector','Whiteboard'],rate:'Standard'},
+  {id:'V4',name:'Seminar Hall A',bld:'C',cap:100,fac:['Projector','Mic','Recording'],rate:'Standard'},
+];
+let BOOKINGS = [
+  {id:'bk1',venue:'V1',date:'2026-11-10',start:'18:00',end:'21:00',event:'Tech Fest Inauguration',org:'Student Council',attendees:600},
+  {id:'bk2',venue:'V4',date:'2026-11-12',start:'15:00',end:'17:00',event:'AI Workshop',org:'CS Dept',attendees:80},
+];
+const FACULTY = [
+  {id:'f1',name:'Dr. Rahul Sharma',dept:'Computer Science',role:'Professor',avail:'Available',loc:'Faculty Block, Room 204',shared:true,updated:'10:38 AM',verified:true},
+  {id:'f2',name:'Dr. Priya Nair',dept:'Electronics',role:'Associate Professor',avail:'In class',loc:'Block B, B-201',shared:true,updated:'10:32 AM',verified:true},
+  {id:'f3',name:'Dr. Arun Mehta',dept:'Physics',role:'Professor',avail:'Available',loc:'Block D, D-102',shared:true,updated:'10:40 AM',verified:true},
+  {id:'f4',name:'Dr. S. Kavitha',dept:'Mathematics',role:'Assistant Professor',avail:'On leave',loc:'—',shared:false,updated:'09:15 AM',verified:false},
+  {id:'f5',name:'Dr. Imran Qureshi',dept:'Computer Science',role:'Associate Professor',avail:'Available',loc:'Faculty Block, Room 118',shared:true,updated:'10:41 AM',verified:true},
+  {id:'f6',name:'Dr. Neha Joshi',dept:'Biotechnology',role:'Professor',avail:'In meeting',loc:'Block D, D-301',shared:true,updated:'10:25 AM',verified:true},
+];
+const STUDENTS = [
+  {id:'s1',name:'Arjun Kumar',roll:'23CS104',dept:'Computer Science',cls:'Computer Science',sec:'CSE-A',loc:'Central Library',source:'Staff Verified',updated:'10:42 AM',status:'Verified',conf:96},
+  {id:'s2',name:'Rahul Verma',roll:'23CS108',dept:'Computer Science',cls:'Computer Science',sec:'CSE-A',loc:'Computer Laboratory 2',source:'Simulated Camera Occupancy',updated:'10:38 AM',status:'Recently Verified',conf:78},
+  {id:'s3',name:'Sneha Iyer',roll:'23CS112',dept:'Computer Science',cls:'Computer Science',sec:'CSE-A',loc:'Block C, C-204',source:'Staff Verified',updated:'10:35 AM',status:'Verified',conf:92},
+  {id:'s4',name:'Karthik Reddy',roll:'23EC019',dept:'Electronics',cls:'Electronics',sec:'ECE-B',loc:'Block B, B-101',source:'Simulated Camera Occupancy',updated:'10:30 AM',status:'Recently Verified',conf:71},
+  {id:'s5',name:'Meera Pillai',roll:'23CS121',dept:'Computer Science',cls:'Computer Science',sec:'CSE-B',loc:'Central Library',source:'Staff Verified',updated:'10:44 AM',status:'Verified',conf:95},
+  {id:'s6',name:'Aditya Singh',roll:'23PH007',dept:'Physics',cls:'Physics',sec:'PHY-A',loc:'Block D, D-101',source:'Simulated Camera Occupancy',updated:'10:28 AM',status:'Recently Verified',conf:68},
+  {id:'s7',name:'Divya Menon',roll:'23CS133',dept:'Computer Science',cls:'Computer Science',sec:'CSE-B',loc:'Block C, C-102',source:'Staff Verified',updated:'10:36 AM',status:'Verified',conf:90},
+  {id:'s8',name:'Rohan Das',roll:'23EC042',dept:'Electronics',cls:'Electronics',sec:'ECE-A',loc:'Cafeteria',source:'Staff Verified',updated:'10:45 AM',status:'Verified',conf:88},
+];
+const CAMERAS = [
+  {id:'CAM-A-101',bld:'A',floor:1,status:'Online',occ:72,activity:'Lecture in progress',updated:'10:42 AM',health:98},
+  {id:'CAM-B-101',bld:'B',floor:1,status:'Online',occ:90,activity:'Lab session active',updated:'10:41 AM',health:95},
+  {id:'CAM-C-204',bld:'C',floor:2,status:'Online',occ:0,activity:'No occupants detected',updated:'10:42 AM',health:99},
+  {id:'CAM-C-101',bld:'C',floor:1,status:'Online',occ:93,activity:'High occupancy',updated:'10:40 AM',health:96},
+  {id:'CAM-D-101',bld:'D',floor:1,status:'Online',occ:93,activity:'Lab in progress',updated:'10:39 AM',health:94},
+  {id:'CAM-L-201',bld:'L',floor:2,status:'Online',occ:87,activity:'Study session',updated:'10:43 AM',health:97},
+  {id:'CAM-U-MAIN',bld:'U',floor:1,status:'Online',occ:0,activity:'Idle',updated:'10:37 AM',health:99},
+  {id:'CAM-F-CAF',bld:'F',floor:1,status:'Maintenance',occ:0,activity:'Camera offline',updated:'09:50 AM',health:42},
+];
+const ACTIVITY = [
+  {t:'10:45 AM',txt:'Room C-204 reached 90% occupancy',type:'warn'},
+  {t:'10:42 AM',txt:'Arjun Kumar verified at Central Library',type:'ok'},
+  {t:'10:38 AM',txt:'Venue U-MAIN reserved for Tech Fest',type:'info'},
+  {t:'10:30 AM',txt:'Lab D-201 marked under maintenance',type:'warn'},
+  {t:'10:22 AM',txt:'New booking request: AI Workshop (V4)',type:'info'},
+  {t:'10:15 AM',txt:'Block B occupancy peaked at 85%',type:'ok'},
+];
+const PEOPLE_ALL = [
+  ...FACULTY.map(f=>({name:f.name,dept:f.dept,role:'Faculty',status:f.avail,loc:f.shared?f.loc:'Not shared',updated:f.updated})),
+  ...STUDENTS.map(s=>({name:s.name,dept:s.dept,role:'Student',status:s.status,loc:s.loc,updated:s.updated})),
+];
+
+// ===================== STATE =====================
+const state = {
+  page:'dashboard',
+  sidebarOpen:false,
+  spaceFilters:{building:'all',type:'all',cap:0,date:'',start:'',end:'',search:''},
+  selectedRoom:null,
+  selectedBuilding:null,
+  selectedCamera:null,
+  locatorMode:'fs', // faculty->students
+  locatorFS:{building:'C',classroom:'C-204',cls:'Computer Science',section:'CSE-A',results:null},
+  locatorSF:{query:'',faculty:null,dept:'all'},
+  booking:{venue:'V1',date:'2026-11-15',start:'10:00',end:'12:00',event:'',org:'',attendees:50},
+  peopleQuery:'',
+  peopleRole:'all',
+  visionDetail:null,
+  analyticsRange:'week',
+  mapSelected:'C',
+};
+
+// ===================== HELPERS =====================
+function $(id){return document.getElementById(id)}
+function h(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function bldName(id){const b=BUILDINGS.find(x=>x.id===id);return b?b.name:id}
+function bldColor(id){const b=BUILDINGS.find(x=>x.id===id);return b?b.color:'#2563EB'}
+function statusChip(s){
+  const m={Available:'green',Occupied:'blue',Reserved:'amber','Temporarily unavailable':'gray','Unavailable':'gray'};
+  return `<span class="chip ${m[s]||'gray'}"><span class="dot ${m[s]||'gray'}"></span>${h(s)}</span>`;
+}
+function toast(msg,type='info'){
+  const wrap=$('toastWrap');
+  const el=document.createElement('div');el.className='toast';
+  const c=type==='ok'?'#16A34A':type==='err'?'#EF4444':'#2563EB';
+  el.innerHTML=`<span style="color:${c};font-weight:700;margin-right:6px">${type==='ok'?'✓':type==='err'?'✕':'ℹ'}</span>${h(msg)}`;
+  wrap.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(40px)';setTimeout(()=>el.remove(),300)},2800);
+}
+function openModal(html){$('modalContent').innerHTML=html;$('modalBack').classList.add('open')}
+function closeModal(){$('modalBack').classList.remove('open')}
+$('modalBack').addEventListener('click',e=>{if(e.target.id==='modalBack')closeModal()});
+
+function navTo(page){
+  state.page=page;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.page===page));
+  const titles={dashboard:['Dashboard','Campus overview • Northstar University'],map:['Campus Map · NexMap','Interactive campus layout'],analytics:['Analytics · NexInsights','Utilization & trends'],spaces:['Smart Space Finder · NexSpace','Discover available spaces'],booking:['Venue Booking · NexReserve','Reserve auditoriums & halls'],people:['People Availability','Directory & presence'],locator:['People Locator · NexLocate','Find students & faculty'],vision:['Campus Vision · NexVision','Simulated AI occupancy intelligence']};
+  $('pageTitle').textContent=titles[page][0];
+  $('pageSubtitle').textContent=titles[page][1];
+  renderPage();
+  if(window.innerWidth<=900) document.getElementById('sidebar').classList.remove('open');
+}
+document.querySelectorAll('.nav-item').forEach(n=>n.addEventListener('click',()=>navTo(n.dataset.page)));
+function renderPage(){
+  const fn={dashboard:renderDashboard,map:renderMap,analytics:renderAnalytics,spaces:renderSpaces,booking:renderBooking,people:renderPeople,locator:renderLocator,vision:renderVision}[state.page];
+  const el=$('pageContent');
+  el.style.opacity='0';el.style.transform='translateY(6px)';
+  el.innerHTML=fn();
+  requestAnimationFrame(()=>{el.style.transition='all .25s ease';el.style.opacity='1';el.style.transform='translateY(0)';});
+  attachPageListeners();
+}
+
+// ===================== PAGE RENDERERS =====================
+function renderDashboard(){
+  const totalRooms=ROOMS.length;
+  const occupied=ROOMS.filter(r=>r.status==='Occupied').length;
+  const vacant=ROOMS.filter(r=>r.status==='Available').length;
+  const aud=VENUES.length;
+  const labs=ROOMS.filter(r=>r.type==='Laboratory').length;
+  const bld=BUILDINGS.length;
+  const occPct=Math.round(occupied/totalRooms*100);
+  return `
+  <div class="grid cols-6" style="margin-bottom:18px">
+    ${metricCard('Total Buildings',bld,'+0 this year','var(--blue)','building')}
+    ${metricCard('Total Classrooms',totalRooms,'Across campus','var(--cyan)','room')}
+    ${metricCard('Occupied Rooms',occupied,`${occPct}% occupancy`,'var(--violet)','occ')}
+    ${metricCard('Vacant Rooms',vacant,'Available now','var(--success)','vac')}
+    ${metricCard('Available Auditoriums',VENUES.filter(v=>v.id!=='V1').length,'Ready to book','var(--warn)','aud')}
+    ${metricCard('Active Laboratories',labs,'In use today','var(--blue2)','lab')}
+  </div>
+  <div class="grid cols-2" style="margin-bottom:18px">
+    <div class="glass card">
+      <h3>Campus Occupancy Overview</h3><div class="meta">Live simulated snapshot</div>
+      <div style="display:flex;align-items:center;gap:24px;margin-top:14px">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="60" fill="none" stroke="rgba(100,116,139,.15)" stroke-width="14"/>
+          <circle cx="75" cy="75" r="60" fill="none" stroke="url(#g1)" stroke-width="14" stroke-dasharray="${occPct*3.77} 377" stroke-linecap="round" transform="rotate(-90 75 75)"/>
+          <defs><linearGradient id="g1"><stop offset="0" stop-color="#2563EB"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs>
+          <text x="75" y="72" text-anchor="middle" font-family="Space Grotesk" font-size="26" font-weight="700" fill="#172033">${occPct}%</text>
+          <text x="75" y="92" text-anchor="middle" font-size="11" fill="#64748B">occupied</text>
+        </svg>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Occupied</span><b>${occupied}</b></div>
+          <div class="bar" style="margin-bottom:12px"><div class="fill" style="width:${occPct}%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Vacant</span><b>${vacant}</b></div>
+          <div class="bar" style="margin-bottom:12px"><div class="fill" style="width:${Math.round(vacant/totalRooms*100)}%;background:linear-gradient(90deg,#16A34A,#06B6D4)"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Reserved</span><b>${ROOMS.filter(r=>r.status==='Reserved').length}</b></div>
+          <div class="bar"><div class="fill" style="width:${Math.round(ROOMS.filter(r=>r.status==='Reserved').length/totalRooms*100)}%;background:linear-gradient(90deg,#F59E0B,#EF4444)"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Building-wise Utilization</h3><div class="meta">Occupancy by block</div>
+      ${barChart(BUILDINGS.map(b=>({label:b.id,val:Math.round(ROOMS.filter(r=>r.bld===b.id&&r.status==='Occupied').length/Math.max(1,ROOMS.filter(r=>r.bld===b.id).length)*100)})),BUILDINGS.map(b=>b.color))}
+    </div>
+  </div>
+  <div class="grid cols-3" style="margin-bottom:18px">
+    <div class="glass card">
+      <h3>Recent Campus Activity</h3>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px">
+        ${ACTIVITY.map(a=>`<div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:11px;color:var(--muted);min-width:62px">${h(a.t)}</span><span style="font-size:13px">${h(a.txt)}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Available Spaces Now</h3>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+        ${ROOMS.filter(r=>r.status==='Available').slice(0,5).map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.5)"><div><div style="font-weight:600;font-size:13px">${h(r.num)}</div><div style="font-size:11px;color:var(--muted)">${h(bldName(r.bld))} • ${r.cap} seats</div></div>${statusChip(r.status)}</div>`).join('')}
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Quick Actions</h3>
+      <div style="margin-top:10px;display:grid;gap:8px">
+        ${[['Find a Classroom','spaces'],['Book an Auditorium','booking'],['Find Students','locator'],['Find Faculty','locator'],['View Campus Map','map']].map(([l,p])=>`<button class="btn ghost sm" style="justify-content:flex-start" data-action="nav" data-page="${p}">${l}</button>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+function metricCard(label,val,sub,color,kind){
+  const icons={building:'<path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2" fill="none"/>',room:'<rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>',occ:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" fill="none"/>',vac:'<path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" fill="none"/>',aud:'<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2" fill="none"/>',lab:'<path d="M9 3v6l-5 9a2 2 0 001.7 3h12.6a2 2 0 001.7-3L15 9V3" stroke="currentColor" stroke-width="2" fill="none"/>'};
+  return `<div class="glass card metric">
+    <div class="iconwrap" style="background:${color}1a;color:${color}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icons[kind]}</svg></div>
+    <div class="val num">${val}</div>
+    <div class="lbl">${h(label)}</div>
+    <div class="delta" style="color:var(--muted)">${h(sub)}</div>
+  </div>`;
+}
+function barChart(data,colors){
+  const max=Math.max(...data.map(d=>d.val),1);
+  return `<div class="chart-wrap"><svg class="chart" viewBox="0 0 400 220" preserveAspectRatio="none">
+    ${data.map((d,i)=>{const bw=300/data.length;const x=40+i*bw+4;const hh=(d.val/max)*160;return `<rect x="${x}" y="${200-hh}" width="${bw-8}" height="${hh}" rx="6" fill="${colors[i%colors.length]}" opacity=".85"/><text x="${x+(bw-8)/2}" y="215" text-anchor="middle" font-size="10" fill="#64748B">${h(d.label)}</text><text x="${x+(bw-8)/2}" y="${195-hh}" text-anchor="middle" font-size="10" font-weight="600" fill="#172033">${d.val}%</text>`}).join('')}
+  </svg></div>`;
+}
+
+function renderSpaces(){
+  const f=state.spaceFilters;
+  let rooms=ROOMS.filter(r=>{
+    if(f.building!=='all' && r.bld!==f.building) return false;
+    if(f.type!=='all' && r.type!==f.type) return false;
+    if(f.cap && r.cap<f.cap) return false;
+    if(f.search && ! (r.num.toLowerCase().includes(f.search.toLowerCase()) || bldName(r.bld).toLowerCase().includes(f.search.toLowerCase()) || r.type.toLowerCase().includes(f.search.toLowerCase()))) return false;
+    return true;
+  });
+  return `
+  <div class="glass card" style="margin-bottom:18px">
+    <div class="filters">
+      <div><label class="label">Building</label><select class="select" data-filter="building">
+        <option value="all">All buildings</option>
+        ${BUILDINGS.map(b=>`<option value="${b.id}" ${f.building===b.id?'selected':''}>${h(b.name)}</option>`).join('')}
+      </select></div>
+      <div><label class="label">Room type</label><select class="select" data-filter="type">
+        <option value="all">All types</option>
+        ${['Classroom','Laboratory','Seminar Hall','Study Room','Meeting Room','Auditorium'].map(t=>`<option value="${t}" ${f.type===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div><label class="label">Min capacity</label><select class="select" data-filter="cap">
+        <option value="0">Any</option>
+        ${[20,40,60,100].map(c=>`<option value="${c}" ${f.cap==c?'selected':''}>${c}+</option>`).join('')}
+      </select></div>
+      <div><label class="label">Search</label><input class="input" data-filter="search" value="${h(f.search)}" placeholder="Room, building, type..."/></div>
+      <div style="align-self:flex-end"><button class="btn sm" data-action="applyFilters">Apply</button></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="chip green">Available ${ROOMS.filter(r=>r.status==='Available').length}</span>
+      <span class="chip blue">Occupied ${ROOMS.filter(r=>r.status==='Occupied').length}</span>
+      <span class="chip amber">Reserved ${ROOMS.filter(r=>r.status==='Reserved').length}</span>
+      <span class="chip gray">Unavailable ${ROOMS.filter(r=>r.status==='Unavailable').length}</span>
+    </div>
+  </div>
+  ${rooms.length?`<div class="room-grid">${rooms.map(r=>roomCard(r)).join('')}</div>`:`<div class="glass card empty"><div class="big">🔍</div><div style="font-weight:600;margin-bottom:4px">No rooms match your filters</div><div style="font-size:13px">Try adjusting building, type or capacity.</div></div>`}
+  `;
+}
+function roomCard(r){
+  const occ=r.status==='Occupied'?r.occ:0;
+  const pct=r.cap?Math.round(occ/r.cap*100):0;
+  return `<div class="glass room-card" data-action="roomDetail" data-id="${r.id}">
+    <div class="head"><div><div class="rnum">${h(r.num)}</div><div class="rmeta">${h(bldName(r.bld))} • Floor ${r.floor}</div></div>${statusChip(r.status)}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0"><span class="chip gray">${h(r.type)}</span><span class="chip blue">${r.cap} seats</span></div>
+    <div class="tags">${r.equip.map(e=>`<span class="tag">${h(e)}</span>`).join('')}</div>
+    <div class="cap"><span style="font-size:12px;color:var(--muted);min-width:90px">Availability</span><span style="font-size:12px;font-weight:600">${h(r.avail)}</span></div>
+    ${r.status==='Occupied'?`<div class="cap"><span style="font-size:12px;color:var(--muted);min-width:90px">Occupancy</span><div class="bar"><div class="fill" style="width:${pct}%"></div></div><span style="font-size:12px;font-weight:600">${pct}%</span></div>`:''}
+  </div>`;
+}
+
+function renderBooking(){
+  const b=state.booking;
+  const conflicts=BOOKINGS.filter(x=>x.venue===b.venue && x.date===b.date && !(b.end<=x.start || b.start>=x.end));
+  return `
+  <div class="grid cols-2">
+    <div class="glass card">
+      <h3>Select Venue</h3><div class="meta">Auditoriums & event halls</div>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+        ${VENUES.map(v=>`<div class="glass-sm" style="padding:14px;cursor:pointer;border:${b.venue===v.id?'2px solid var(--blue)':'1px solid rgba(255,255,255,.7)'};background:rgba(255,255,255,.5)" data-action="selectVenue" data-id="${v.id}">
+          <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;font-size:15px">${h(v.name)}</div><span class="chip blue">${v.cap} seats</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">${h(bldName(v.bld))} • ${v.rate}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${v.fac.map(f=>`<span class="tag">${h(f)}</span>`).join('')}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Booking Details</h3><div class="meta">Check availability & reserve</div>
+      <div style="margin-top:12px;display:grid;gap:12px">
+        <div><label class="label">Event name</label><input class="input" style="width:100%" data-bf="event" value="${h(b.event)}" placeholder="e.g. Tech Symposium"/></div>
+        <div><label class="label">Organizer</label><input class="input" style="width:100%" data-bf="org" value="${h(b.org)}" placeholder="Department / Club"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label class="label">Date</label><input type="date" class="input" style="width:100%" data-bf="date" value="${b.date}"/></div>
+          <div><label class="label">Expected attendees</label><input type="number" class="input" style="width:100%" data-bf="attendees" value="${b.attendees}"/></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label class="label">Start time</label><input type="time" class="input" style="width:100%" data-bf="start" value="${b.start}"/></div>
+          <div><label class="label">End time</label><input type="time" class="input" style="width:100%" data-bf="end" value="${b.end}"/></div>
+        </div>
+        ${conflicts.length?`<div style="padding:10px 12px;border-radius:10px;background:rgba(239,68,68,.08);color:var(--err);font-size:13px;font-weight:600">⚠ Conflict detected: ${conflicts.map(c=>h(c.event)).join(', ')} overlaps this slot.</div>`:`<div style="padding:10px 12px;border-radius:10px;background:rgba(22,163,74,.08);color:var(--success);font-size:13px;font-weight:600">✓ Slot appears available.</div>`}
+        <div style="display:flex;gap:10px">
+          <button class="btn" data-action="checkAvail">Check Availability</button>
+          <button class="btn ghost" data-action="reserveVenue" ${conflicts.length?'disabled':''}>Reserve</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="glass card" style="margin-top:18px">
+    <h3>Existing Reservations</h3><div class="meta">Sample bookings demonstrating conflict detection</div>
+    <table class="table" style="margin-top:10px">
+      <thead><tr><th>Venue</th><th>Event</th><th>Date</th><th>Time</th><th>Attendees</th></tr></thead>
+      <tbody>
+        ${BOOKINGS.map(bk=>`<tr><td>${h(VENUES.find(v=>v.id===bk.venue).name)}</td><td>${h(bk.event)}<div style="font-size:11px;color:var(--muted)">${h(bk.org)}</div></td><td>${h(bk.date)}</td><td>${h(bk.start)}–${h(bk.end)}</td><td>${bk.attendees}</td></tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function renderMap(){
+  const sel=BUILDINGS.find(b=>b.id===state.mapSelected);
+  const rooms=ROOMS.filter(r=>r.bld===state.mapSelected);
+  return `
+  <div class="map-wrap">
+    <div class="glass card" style="padding:12px">
+      <div style="padding:8px 8px 12px"><h3 style="margin:0">Interactive Campus Map</h3><div class="meta">Click a building to inspect</div></div>
+      <div class="map-svg">
+        <svg viewBox="0 0 560 400">
+          <rect width="560" height="400" fill="#EEF2F9"/>
+          <!-- paths -->
+          <path d="M135 115 Q200 160 230 195" stroke="#CBD5E1" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M300 100 Q340 160 300 200" stroke="#CBD5E1" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <path d="M200 320 Q280 300 300 250" stroke="#CBD5E1" stroke-width="6" fill="none" stroke-linecap="round"/>
+          ${BUILDINGS.map(b=>`<g class="building" data-action="selectBuilding" data-id="${b.id}">
+            <rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="14" fill="${b.color}" opacity="${state.mapSelected===b.id?1:.75}"/>
+            <rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="14" fill="white" opacity=".12"/>
+            <text x="${b.x+b.w/2}" y="${b.y+b.h/2-4}" text-anchor="middle" font-family="Space Grotesk" font-size="13" font-weight="700" fill="white">${b.id}</text>
+            <text x="${b.x+b.w/2}" y="${b.y+b.h/2+12}" text-anchor="middle" font-family="Inter" font-size="10" fill="rgba(255,255,255,.85)">${b.name.split('–')[0].trim()}</text>
+          </g>`).join('')}
+          <!-- legend -->
+          <g transform="translate(14,360)">
+            <rect width="12" height="12" rx="3" fill="#2563EB"/><text x="18" y="11" font-size="10" fill="#64748B">Academic</text>
+            <rect x="90" width="12" height="12" rx="3" fill="#F59E0B"/><text x="108" y="11" font-size="10" fill="#64748B">Library</text>
+            <rect x="170" width="12" height="12" rx="3" fill="#EF4444"/><text x="188" y="11" font-size="10" fill="#64748B">Auditorium</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="glass card">
+      ${sel?`
+      <h3>${h(sel.name)}</h3><div class="meta">${sel.floors} floors</div>
+      <div style="margin-top:12px;display:grid;gap:8px">
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span>Available rooms</span><b style="color:var(--success)">${rooms.filter(r=>r.status==='Available').length}</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span>Occupied rooms</span><b style="color:var(--blue)">${rooms.filter(r=>r.status==='Occupied').length}</b></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span>Total rooms</span><b>${rooms.length}</b></div>
+      </div>
+      <div style="margin-top:12px"><div class="label">Facilities</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">${sel.facilities.map(f=>`<span class="tag">${h(f)}</span>`).join('')}</div></div>
+      <div style="margin-top:14px"><div class="label">Classroom listings</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px;max-height:220px;overflow:auto">
+          ${rooms.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.5)"><div><div style="font-weight:600;font-size:13px">${h(r.num)}</div><div style="font-size:11px;color:var(--muted)">${h(r.type)} • ${r.cap} seats</div></div>${statusChip(r.status)}</div>`).join('')}
+        </div>
+      </div>`:'<div class="empty">Select a building</div>'}
+    </div>
+  </div>`;
+}
+
+function renderPeople(){
+  const q=state.peopleQuery.toLowerCase();
+  const list=PEOPLE_ALL.filter(p=>{
+    if(state.peopleRole!=='all' && p.role!==state.peopleRole) return false;
+    if(q && !(p.name.toLowerCase().includes(q)||p.dept.toLowerCase().includes(q))) return false;
+    return true;
+  });
+  return `
+  <div class="glass card" style="margin-bottom:18px">
+    <div class="filters">
+      <div><label class="label">Search</label><input class="input" data-pf="q" value="${h(state.peopleQuery)}" placeholder="Name or department..."/></div>
+      <div><label class="label">Role</label><select class="select" data-pf="role">
+        <option value="all" ${state.peopleRole==='all'?'selected':''}>All</option>
+        <option value="Faculty" ${state.peopleRole==='Faculty'?'selected':''}>Faculty</option>
+        <option value="Student" ${state.peopleRole==='Student'?'selected':''}>Student</option>
+      </select></div>
+      <div style="align-self:flex-end"><button class="btn sm" data-action="applyPeople">Apply</button></div>
+    </div>
+  </div>
+  <div class="glass card">
+    <table class="table">
+      <thead><tr><th>Name</th><th>Department</th><th>Role</th><th>Status</th><th>Last shared location</th><th>Updated</th></tr></thead>
+      <tbody>
+        ${list.map(p=>{
+          const st=p.status;
+          const cls=st==='Available'||st==='Verified'?'green':st==='In class'||st==='In meeting'||st==='Recently Verified'?'amber':st==='On leave'?'gray':'blue';
+          return `<tr><td style="font-weight:600">${h(p.name)}</td><td>${h(p.dept)}</td><td><span class="chip gray">${h(p.role)}</span></td><td><span class="chip ${cls}"><span class="dot ${cls}"></span>${h(st)}</span></td><td>${h(p.loc)}</td><td style="color:var(--muted)">${h(p.updated)}</td></tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    ${!list.length?'<div class="empty">No people match.</div>':''}
+  </div>
+  <div style="margin-top:12px;font-size:12px;color:var(--muted)">Locations shown only where voluntarily shared or verified. Simulated demo data.</div>`;
+}
+
+function renderLocator(){
+  const mode=state.locatorMode;
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
+    <div class="seg">
+      <button class="${mode==='fs'?'active':''}" data-action="setLocatorMode" data-mode="fs">Faculty → Find Students</button>
+      <button class="${mode==='sf'?'active':''}" data-action="setLocatorMode" data-mode="sf">Student → Find Faculty</button>
+    </div>
+    <span class="sim-badge">PRIVACY-AWARE • SIMULATED</span>
+  </div>
+  ${mode==='fs'?renderLocatorFS():renderLocatorSF()}`;
+}
+function renderLocatorFS(){
+  const f=state.locatorFS;
+  const students=STUDENTS.filter(s=>s.cls===f.cls && s.sec===f.section);
+  const res=f.results?students.filter(s=>f.results.includes(s.id)):null;
+  const list=res||students;
+  return `
+  <div class="grid cols-2">
+    <div class="glass card">
+      <h3>Find Students</h3><div class="meta">Select filters, then search</div>
+      <div style="margin-top:12px;display:grid;gap:12px">
+        <div><label class="label">Building</label><select class="select" style="width:100%" data-lfs="building">
+          ${BUILDINGS.map(b=>`<option value="${b.id}" ${f.building===b.id?'selected':''}>${h(b.name)}</option>`).join('')}
+        </select></div>
+        <div><label class="label">Classroom</label><select class="select" style="width:100%" data-lfs="classroom">
+          ${ROOMS.filter(r=>r.bld===f.building).map(r=>`<option value="${r.num}" ${f.classroom===r.num?'selected':''}>${h(r.num)} • ${h(r.type)}</option>`).join('')}
+        </select></div>
+        <div><label class="label">Class</label><select class="select" style="width:100%" data-lfs="cls">
+          ${['Computer Science','Electronics','Physics'].map(c=>`<option value="${c}" ${f.cls===c?'selected':''}>${c}</option>`).join('')}
+        </select></div>
+        <div><label class="label">Section</label><select class="select" style="width:100%" data-lfs="section">
+          ${['CSE-A','CSE-B','ECE-A','ECE-B','PHY-A'].map(s=>`<option value="${s}" ${f.section===s?'selected':''}>${s}</option>`).join('')}
+        </select></div>
+        <button class="btn" data-action="findStudents">Find Students</button>
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Results</h3><div class="meta">${f.results?list.length+' students found':'Run a search to see results'}</div>
+      ${f.results?`
+      <div style="margin:10px 0;display:flex;gap:8px;flex-wrap:wrap">
+        <input class="input" data-lfs="search" placeholder="Search student..." style="flex:1" value="${h(f.search||'')}"/>
+        <select class="select" data-lfs="locfilter">${['all',...new Set(list.map(s=>s.loc))].map(l=>`<option value="${h(l)}" ${(f.locfilter||'all')===l?'selected':''}>${l==='all'?'All locations':h(l)}</option>`).join('')}</select>
+        <select class="select" data-lfs="sort"><option value="updated" ${(f.sort||'updated')==='updated'?'selected':''}>Sort: Updated</option><option value="name" ${f.sort==='name'?'selected':''}>Sort: Name</option></select>
+        <button class="btn sm ghost" data-action="refreshStudents">Refresh</button>
+      </div>
+      <table class="table">
+        <thead><tr><th>Student</th><th>Roll</th><th>Last reported location</th><th>Source</th><th>Updated</th><th>Status</th><th>Conf.</th><th></th></tr></thead>
+        <tbody>
+          ${(() => {
+            let arr = list.slice();
+            const q=(f.search||'').toLowerCase();
+            if(q) arr=arr.filter(s=>s.name.toLowerCase().includes(q)||s.roll.toLowerCase().includes(q));
+            if(f.locfilter && f.locfilter!=='all') arr=arr.filter(s=>s.loc===f.locfilter);
+            if(f.sort==='name') arr.sort((a,b)=>a.name.localeCompare(b.name));
+            else arr.sort((a,b)=>b.updated.localeCompare(a.updated));
+            return arr.map(s=>`<tr>
+            <td style="font-weight:600">${h(s.name)}</td><td>${h(s.roll)}</td>
+            <td>${h(s.loc)}</td><td style="font-size:11px">${h(s.source)}</td>
+            <td style="color:var(--muted)">${h(s.updated)}</td>
+            <td><span class="chip ${s.status==='Verified'?'green':'amber'}">${h(s.status)}</span></td>
+            <td class="num">${s.conf}%</td>
+            <td><button class="btn sm ghost" data-action="studentDetail" data-id="${s.id}">Details</button></td>
+          </tr>`).join('');
+          })()}
+        </tbody>
+      </table>`:`<div class="empty"><div class="big">👥</div><div style="font-weight:600;margin-bottom:4px">No results yet</div><div style="font-size:13px">Configure filters and click Find Students.</div></div>`}
+    </div>
+  </div>`;
+}
+function renderLocatorSF(){
+  const f=state.locatorSF;
+  const fac=f.faculty;
+  return `
+  <div class="grid cols-2">
+    <div class="glass card">
+      <h3>Find Faculty</h3><div class="meta">Search by name or department</div>
+      <div style="margin-top:12px;display:grid;gap:12px">
+        <div><label class="label">Search faculty</label><input class="input" style="width:100%" data-sf="query" value="${h(f.query)}" placeholder="Name..."/></div>
+        <div><label class="label">Department</label><select class="select" style="width:100%" data-sf="dept">
+          <option value="all">All departments</option>
+          ${[...new Set(FACULTY.map(x=>x.dept))].map(d=>`<option value="${d}" ${f.dept===d?'selected':''}>${d}</option>`).join('')}
+        </select></div>
+        <div style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto">
+          ${FACULTY.filter(x=>(!f.query || x.name.toLowerCase().includes(f.query.toLowerCase())) && (f.dept==='all' || x.dept===f.dept)).map(x=>`<div style="padding:10px 12px;border-radius:10px;background:${f.faculty&&f.faculty.id===x.id?'rgba(37,99,235,.1)':'rgba(255,255,255,.5)'};cursor:pointer;display:flex;justify-content:space-between;align-items:center" data-action="selectFaculty" data-id="${x.id}">
+            <div><div style="font-weight:600;font-size:13px">${h(x.name)}</div><div style="font-size:11px;color:var(--muted)">${h(x.dept)} • ${h(x.role)}</div></div>
+            <span class="chip ${x.avail==='Available'?'green':'amber'}">${h(x.avail)}</span>
+          </div>`).join('')}
+        </div>
+        <button class="btn" data-action="findFaculty">Find Faculty</button>
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Faculty Details</h3>
+      ${fac?`
+      <div style="margin-top:12px">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+          <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--violet));display:grid;place-items:center;color:#fff;font-weight:700;font-size:18px">${fac.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+          <div><div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700">${h(fac.name)}</div><div style="font-size:13px;color:var(--muted)">${h(fac.role)} • ${h(fac.dept)}</div></div>
+        </div>
+        <div style="display:grid;gap:10px">
+          ${[['Faculty ID',fac.id.toUpperCase()],['Department',fac.dept],['Latest shared location',fac.shared?fac.loc:'Not shared (privacy)'],['Room / Building',fac.shared?fac.loc:'—'],['Availability',fac.avail],['Last updated',fac.updated],['Verification',fac.verified?'Verified':'Not verified']].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.5)"><span style="font-size:12px;color:var(--muted)">${k}</span><span style="font-size:13px;font-weight:600">${h(v)}</span></div>`).join('')}
+        </div>
+        ${!fac.shared?'<div style="margin-top:12px;padding:10px;border-radius:10px;background:rgba(245,158,11,.1);color:#92400e;font-size:12px;font-weight:600">Location not shared by this faculty member (privacy respected).</div>':''}
+      </div>`:`<div class="empty"><div class="big">🎓</div><div style="font-weight:600;margin-bottom:4px">No faculty selected</div><div style="font-size:13px">Search and select a faculty member, then click Find Faculty.</div></div>`}
+    </div>
+  </div>`;
+}
+
+function renderVision(){
+  const sel=state.selectedCamera?CAMERAS.find(c=>c.id===state.selectedCamera):null;
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+    <div><h3 style="margin:0;font-family:'Space Grotesk',sans-serif">Camera Grid</h3><div style="font-size:12px;color:var(--muted)">Simulated occupancy intelligence • Not live CCTV</div></div>
+    <span class="sim-badge">SIMULATED DATA</span>
+  </div>
+  <div class="cam-grid" style="margin-bottom:18px">
+    ${CAMERAS.map(c=>`<div class="glass cam-card" data-action="selectCamera" data-id="${c.id}">
+      <div class="cam-preview">
+        <div class="scan"></div>
+        ${c.status==='Online'?`<div class="dotmove" style="left:20px;top:30px"></div><div class="dotmove" style="left:80px;top:70px;animation-delay:-1.5s;background:var(--violet)"></div><div class="dotmove" style="left:140px;top:40px;animation-delay:-3s;background:var(--cyan)"></div>`:''}
+        <div style="position:absolute;bottom:8px;left:10px;font-size:11px;color:var(--muted);font-weight:600">${h(c.id)}</div>
+        <div style="position:absolute;top:8px;right:10px"><span class="chip ${c.status==='Online'?'green':'gray'}" style="font-size:10px">${h(c.status)}</span></div>
+      </div>
+      <div class="cam-body">
+        <div class="cam-id">${h(c.id)}</div>
+        <div class="cam-loc">${h(bldName(c.bld))} • Floor ${c.floor}</div>
+        <div style="margin-top:8px;display:flex;justify-content:space-between;font-size:12px"><span>Occupancy</span><b>${c.occ}%</b></div>
+        <div class="bar" style="margin-top:4px"><div class="fill" style="width:${c.occ}%;background:${c.occ>80?'linear-gradient(90deg,#EF4444,#F59E0B)':c.occ>40?'linear-gradient(90deg,#F59E0B,#06B6D4)':'linear-gradient(90deg,#16A34A,#06B6D4)'}"></div></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">${h(c.activity)}</div>
+      </div>
+    </div>`).join('')}
+  </div>
+  ${sel?`<div class="glass card">
+    <h3>Camera Detail — ${h(sel.id)}</h3><div class="meta">${h(bldName(sel.bld))}, Floor ${sel.floor}</div>
+    <div class="grid cols-2" style="margin-top:14px">
+      <div>
+        <div style="height:200px;border-radius:14px;background:linear-gradient(135deg,#dbeafe,#e0e7ff);position:relative;overflow:hidden">
+          <div class="scan" style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(37,99,235,.05) 2px 4px)"></div>
+          <div style="position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:13px;font-weight:600">Simulated preview • ${h(sel.id)}</div>
+        </div>
+      </div>
+      <div style="display:grid;gap:10px">
+        ${[['Camera ID',sel.id],['Location',bldName(sel.bld)+', Floor '+sel.floor],['Status',sel.status+' (Simulated)'],['Room Occupancy',sel.occ+'%'],['Detected Activity',sel.activity],['Last Updated',sel.updated],['Health',sel.health+'%']].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.5)"><span style="font-size:12px;color:var(--muted)">${k}</span><span style="font-size:13px;font-weight:600">${h(v)}</span></div>`).join('')}
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--muted)">Occupancy estimates are simulated. No individual identification is performed.</div>
+  </div>`:''}`;
+}
+
+function renderAnalytics(){
+  const range=state.analyticsRange;
+  const mult=range==='today'?0.7:range==='month'?1.1:1;
+  const util=BUILDINGS.map(b=>{
+    const tot=Math.max(1,ROOMS.filter(r=>r.bld===b.id).length);
+    const occ=ROOMS.filter(r=>r.bld===b.id&&r.status==='Occupied').length;
+    return {label:b.id,val:Math.min(99,Math.round(occ/tot*100*mult))};
+  });
+  const hourly=[8,9,10,11,12,13,14,15,16,17,18].map(hh=>({label:hh+':00',val:Math.round((30+Math.sin(hh/2)*20+Math.random()*10)*mult)}));
+  const audUtil=VENUES.map(v=>({label:v.name.split(' ')[0],val:Math.round((v.cap/900)*100*mult)}));
+  return `
+  <div style="display:flex;gap:8px;margin-bottom:18px">
+    <div class="seg"><button class="${range==='today'?'active':''}" data-action="setRange" data-range="today">Today</button><button class="${range==='week'?'active':''}" data-action="setRange" data-range="week">This Week</button><button class="${range==='month'?'active':''}" data-action="setRange" data-range="month">This Month</button></div>
+  </div>
+  <div class="grid cols-2" style="margin-bottom:18px">
+    <div class="glass card"><h3>Building-wise Occupancy</h3><div class="meta">${range}</div>${barChart(util,BUILDINGS.map(b=>b.color))}</div>
+    <div class="glass card"><h3>Peak Campus Hours</h3><div class="meta">Occupancy by hour</div>${lineChart(hourly)}</div>
+  </div>
+  <div class="grid cols-2" style="margin-bottom:18px">
+    <div class="glass card"><h3>Auditorium Utilization</h3><div class="meta">By venue</div>${barChart(audUtil,['#EF4444','#8B5CF6','#06B6D4','#2563EB'])}</div>
+    <div class="glass card"><h3>Vacant Room Distribution</h3><div class="meta">By building</div>${barChart(BUILDINGS.map(b=>({label:b.id,val:ROOMS.filter(r=>r.bld===b.id&&r.status==='Available').length})),BUILDINGS.map(b=>b.color))}</div>
+  </div>
+  <div class="glass card">
+    <h3>Top Utilized Spaces</h3>
+    <table class="table" style="margin-top:10px">
+      <thead><tr><th>Room</th><th>Building</th><th>Type</th><th>Utilization</th><th>Status</th></tr></thead>
+      <tbody>
+        ${ROOMS.slice().sort((a,b)=>b.occ-a.occ).slice(0,8).map(r=>`<tr><td style="font-weight:600">${h(r.num)}</td><td>${h(bldName(r.bld))}</td><td>${h(r.type)}</td><td><div style="display:flex;align-items:center;gap:8px"><div class="bar" style="width:120px"><div class="fill" style="width:${r.cap?Math.round(r.occ/r.cap*100):0}%"></div></div><span class="num">${r.cap?Math.round(r.occ/r.cap*100):0}%</span></div></td><td>${statusChip(r.status)}</td></tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+  <div class="glass card" style="margin-top:18px">
+    <h3>Insights</h3>
+    <div style="display:grid;gap:8px;margin-top:10px">
+      <div style="padding:10px 12px;border-radius:10px;background:rgba(37,99,235,.06);font-size:13px">📈 Peak occupancy occurs between 10:00–12:00 across academic blocks.</div>
+      <div style="padding:10px 12px;border-radius:10px;background:rgba(22,163,74,.06);font-size:13px">✅ Block C has the highest number of available rooms after 13:00.</div>
+      <div style="padding:10px 12px;border-radius:10px;background:rgba(245,158,11,.06);font-size:13px">⚠ Lab D-201 is under maintenance — capacity reduced by 40 seats.</div>
+    </div>
+  </div>`;
+}
+function lineChart(data){
+  const max=Math.max(...data.map(d=>d.val),1);const min=Math.min(...data.map(d=>d.val));
+  const w=400,h=180,pad=30;
+  const pts=data.map((d,i)=>{const x=pad+i*( (400-pad*2)/(data.length-1));const y=h-pad-(d.val-min)/(max-min+1)*(h-pad*2);return `${x},${y}`}).join(' ');
+  return `<div class="chart-wrap"><svg class="chart" viewBox="0 0 400 200" preserveAspectRatio="none">
+    <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB" stop-opacity=".3"/><stop offset="1" stop-color="#2563EB" stop-opacity="0"/></linearGradient></defs>
+    <polyline points="${pts}" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${data.map((d,i)=>{const x=pad+i*((400-pad*2)/(data.length-1));const y=200-pad-(d.val-min)/(max-min+1)*(200-pad*2);return `<circle cx="${x}" cy="${y}" r="3.5" fill="#2563EB"/>`}).join('')}
+    ${data.map((d,i)=>{const x=pad+i*((400-pad*2)/(data.length-1));return `<text x="${x}" y="195" text-anchor="middle" font-size="9" fill="#64748B">${d.label}</text>`}).join('')}
+  </svg></div>`;
+}
+
+// ===================== LISTENERS =====================
+function attachPageListeners(){
+  // delegated via main already; nothing extra needed for data-action except some inputs
+}
+const mainEl=document.querySelector('.main')||document.body;
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-action]');
+  if(!t) return;
+  const a=t.dataset.action;
+  if(a==='enterApp'){document.getElementById('landingView').style.display='none';document.getElementById('appView').style.display='block';navTo('dashboard');}
+  else if(a==='backLanding'){document.getElementById('appView').style.display='none';document.getElementById('landingView').style.display='block';}
+  else if(a==='toggleSidebar'){document.getElementById('sidebar').classList.toggle('open');}
+  else if(a==='nav'){navTo(t.dataset.page);}
+  else if(a==='scroll'){const el=document.getElementById(t.dataset.target);if(el)el.scrollIntoView({behavior:'smooth'});}
+  else if(a==='roomDetail'){
+    const r=ROOMS.find(x=>x.id===t.dataset.id);
+    openModal(`<h3>${h(r.num)} — ${h(r.type)}</h3><div class="meta">${h(bldName(r.bld))}, Floor ${r.floor}</div>
+      <div style="margin-top:14px;display:grid;gap:8px">
+        ${[['Capacity',r.cap+' seats'],['Status',r.status],['Availability',r.avail],['Equipment',r.equip.join(', ')],['Occupancy',r.status==='Occupied'?r.occ+' / '+r.cap+' ('+Math.round(r.occ/r.cap*100)+'%)':'—']].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.5)"><span style="font-size:12px;color:var(--muted)">${k}</span><span style="font-size:13px;font-weight:600">${h(v)}</span></div>`).join('')}
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px"><button class="btn sm" data-action="toast" data-msg="Booking request sent (simulated).">Request Booking</button><button class="btn sm ghost" data-action="closeModal">Close</button></div>`);
+  }
+  else if(a==='closeModal'){closeModal();}
+  else if(a==='toast'){toast(t.dataset.msg,'ok');}
+  else if(a==='applyFilters'){
+    state.spaceFilters.building=document.querySelector('[data-filter="building"]').value;
+    state.spaceFilters.type=document.querySelector('[data-filter="type"]').value;
+    state.spaceFilters.cap=parseInt(document.querySelector('[data-filter="cap"]').value)||0;
+    state.spaceFilters.search=document.querySelector('[data-filter="search"]').value;
+    renderPage();
+  }
+  else if(a==='selectVenue'){state.booking.venue=t.dataset.id;renderPage();}
+  else if(a==='checkAvail'){renderPage();toast('Availability checked (simulated).','info');}
+  else if(a==='reserveVenue'){
+    const b=state.booking;
+    const v=VENUES.find(x=>x.id===b.venue);
+    const conflict=BOOKINGS.some(x=>x.venue===b.venue && x.date===b.date && !(b.end<=x.start || b.start>=x.end));
+    if(conflict){toast('Booking conflict detected.','err');return;}
+    if(!b.event){toast('Please enter an event name.','err');return;}
+    const newBk={id:'bk'+Date.now(),venue:b.venue,date:b.date,start:b.start,end:b.end,event:b.event,org:b.org||'Demo',attendees:b.attendees};
+    BOOKINGS.push(newBk);
+    openModal(`<h3>Booking Confirmed ✓</h3><div class="meta">${h(v.name)}</div><div style="margin-top:14px;display:grid;gap:8px">
+      ${[['Event',b.event],['Date',b.date],['Time',b.start+' – '+b.end],['Attendees',b.attendees],['Venue',v.name]].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.5)"><span style="font-size:12px;color:var(--muted)">${k}</span><span style="font-size:13px;font-weight:600">${h(v)}</span></div>`).join('')}
+    </div><div style="margin-top:14px"><button class="btn sm" data-action="closeModal">Done</button></div>`);
+    toast('Reservation created (simulated).','ok');
+    renderPage();
+  }
+  else if(a==='selectBuilding'){state.mapSelected=t.dataset.id;renderPage();}
+  else if(a==='applyPeople'){
+    state.peopleQuery=document.querySelector('[data-pf="q"]').value;
+    state.peopleRole=document.querySelector('[data-pf="role"]').value;
+    renderPage();
+  }
+  else if(a==='setLocatorMode'){state.locatorMode=t.dataset.mode;state.locatorFS.results=null;renderPage();}
+  else if(a==='findStudents'){
+    // read filters
+    const g=document.querySelector('[data-lfs="building"]'); if(g) state.locatorFS.building=g.value;
+    const c=document.querySelector('[data-lfs="classroom"]'); if(c) state.locatorFS.classroom=c.value;
+    const cl=document.querySelector('[data-lfs="cls"]'); if(cl) state.locatorFS.cls=cl.value;
+    const sc=document.querySelector('[data-lfs="section"]'); if(sc) state.locatorFS.section=sc.value;
+    state.locatorFS.results=STUDENTS.filter(s=>s.cls===state.locatorFS.cls && s.sec===state.locatorFS.section).map(s=>s.id);
+    toast(`Found ${state.locatorFS.results.length} students (simulated).`,'ok');
+    renderPage();
+  }
+  else if(a==='refreshStudents'){toast('Results refreshed (simulated).','info');renderPage();}
+  else if(a==='studentDetail'){
+    const s=STUDENTS.find(x=>x.id===t.dataset.id);
+    openModal(`<h3>${h(s.name)}</h3><div class="meta">${h(s.roll)} • ${h(s.dept)}</div>
+      <div style="margin-top:14px;display:grid;gap:8px">
+        ${[['Last reported location',s.loc],['Location source',s.source],['Last updated',s.updated],['Verification status',s.status],['Confidence',s.conf+'%'], ['Class / Section',s.cls+' / '+s.sec]].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.5)"><span style="font-size:12px;color:var(--muted)">${k}</span><span style="font-size:13px;font-weight:600">${h(v)}</span></div>`).join('')}
+      </div>
+      <div style="margin-top:14px"><button class="btn sm ghost" data-action="closeModal">Close</button></div>`);
+  }  else if(a==='selectFaculty'){state.locatorSF.faculty=FACULTY.find(f=>f.id===t.dataset.id);renderPage();}
+  else if(a==='findFaculty'){
+    const q=document.querySelector('[data-sf="query"]'); if(q) state.locatorSF.query=q.value;
+    if(!state.locatorSF.faculty){
+      // auto pick first match
+      const m=FACULTY.find(x=>!state.locatorSF.query||x.name.toLowerCase().includes(state.locatorSF.query.toLowerCase()));
+      state.locatorSF.faculty=m||FACULTY[0];
+    }
+    toast('Faculty location retrieved (simulated).','ok');
+    renderPage();
+  }
+  else if(a==='selectCamera'){state.selectedCamera=t.dataset.id;renderPage();}
+  else if(a==='setRange'){state.analyticsRange=t.dataset.range;renderPage();}
+});
+
+// input sync for booking fields
+document.addEventListener('input',e=>{
+  const bf=e.target.dataset && e.target.dataset.bf;
+  if(bf){ state.booking[bf]= e.target.type==='number'?parseInt(e.target.value)||0:e.target.value; }
+  const lfs=e.target.dataset && e.target.dataset.lfs;
+  if(lfs && lfs==='search'){ /* no-op filter visual */ }
+  const sf=e.target.dataset && e.target.dataset.sf;
+  if(sf==='query'){ state.locatorSF.query=e.target.value; }
+});
+document.addEventListener('change',e=>{
+  const lfs=e.target.dataset && e.target.dataset.lfs;
+  if(lfs){ state.locatorFS[lfs]=e.target.value; if(state.page==='locator') renderPage(); }
+  const sf=e.target.dataset && e.target.dataset.sf;
+  if(sf){ state.locatorSF[sf]=e.target.value; if(state.page==='locator') renderPage(); }
+  const pf=e.target.dataset && e.target.dataset.pf;
+  if(pf==='role'){ state.peopleRole=e.target.value; }
+});
+
+// global search
+document.getElementById('globalSearch').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase();
+  if(!q) return;
+  // quick jump: if matches a page keyword
+});
+
+// init
+document.getElementById('landingView').style.display='block';
+document.getElementById('appView').style.display='none';
+
+// expose for debugging
+window.NEXORA={state,ROOMS,BUILDINGS};
+</script>
+</body>
+</html>
