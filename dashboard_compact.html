@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>NEXORA Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F7FB;--blue:#2563EB;--violet:#8B5CF6;--cyan:#06B6D4;--ink:#172033;--muted:#64748B;--success:#16A34A;--warn:#F59E0B;--radius:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg);font-size:12px}
+h3{font-family:'Space Grotesk',sans-serif;font-size:13px;margin:0 0 2px}
+.glass{background:linear-gradient(135deg,rgba(255,255,255,.8),rgba(255,255,255,.5));border:1px solid rgba(255,255,255,.7);box-shadow:0 8px 20px rgba(31,45,90,.06);backdrop-filter:blur(16px);border-radius:var(--radius);padding:10px}
+.main{max-width:900px;margin:0 auto;padding:12px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.title{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700}
+.sub{font-size:10px;color:var(--muted)}
+.badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:999px;background:rgba(245,158,11,.12);color:#92400e}
+.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.metric{display:flex;flex-direction:column;gap:2px}
+.metric .v{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700}
+.metric .l{font-size:10px;color:var(--muted)}
+.metric .i{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;margin-bottom:2px}
+.bar{height:4px;border-radius:999px;background:rgba(100,116,139,.15);overflow:hidden;flex:1}
+.fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:600}
+.chip.g{color:var(--success);background:rgba(22,163,74,.1)}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;background:var(--success)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:4px 6px;border-radius:8px;background:rgba(255,255,255,.5);margin-bottom:4px}
+.row .t{font-weight:600;font-size:11px}.row .s{font-size:9px;color:var(--muted)}
+.btn{padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.7);background:rgba(255,255,255,.6);font-size:10px;font-weight:600;cursor:pointer}
+svg.chart{width:100%;height:120px}
+</style></head><body>
+<div class="main">
+  <div class="top"><div><div class="title">Dashboard</div><div class="sub">Campus overview • Northstar University</div></div><span class="badge">● SIMULATED DATA</span></div>
+  <div class="grid6">
+    <div class="glass metric"><div class="i" style="background:#2563EB1a;color:#2563EB">B</div><div class="v">7</div><div class="l">Buildings</div></div>
+    <div class="glass metric"><div class="i" style="background:#06B6D41a;color:#06B6D4">R</div><div class="v">23</div><div class="l">Classrooms</div></div>
+    <div class="glass metric"><div class="i" style="background:#8B5CF61a;color:#8B5CF6">O</div><div class="v">6</div><div class="l">Occupied</div></div>
+    <div class="glass metric"><div class="i" style="background:#16A34A1a;color:#16A34A">V</div><div class="v">13</div><div class="l">Vacant</div></div>
+    <div class="glass metric"><div class="i" style="background:#F59E0B1a;color:#F59E0B">A</div><div class="v">3</div><div class="l">Auditoriums</div></div>
+    <div class="glass metric"><div class="i" style="background:#3B82F61a;color:#3B82F6">L</div><div class="v">6</div><div class="l">Labs</div></div>
+  </div>
+  <div class="grid2">
+    <div class="glass"><h3>Occupancy Overview</h3>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+        <svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="30" fill="none" stroke="rgba(100,116,139,.15)" stroke-width="8"/><circle cx="40" cy="40" r="30" fill="none" stroke="url(#g)" stroke-width="8" stroke-dasharray="49 188" stroke-linecap="round" transform="rotate(-90 40 40)"/><defs><linearGradient id="g"><stop offset="0" stop-color="#2563EB"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs><text x="40" y="40" text-anchor="middle" font-family="Space Grotesk" font-size="14" font-weight="700" fill="#172033">26%</text></svg>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span>Occupied</span><b>6</b></div><div class="bar" style="margin-bottom:6px"><div class="fill" style="width:26%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span>Vacant</span><b>13</b></div><div class="bar" style="margin-bottom:6px"><div class="fill" style="width:57%;background:linear-gradient(90deg,#16A34A,#06B6D4)"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px"><span>Reserved</span><b>3</b></div><div class="bar"><div class="fill" style="width:13%;background:linear-gradient(90deg,#F59E0B,#EF4444)"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="glass"><h3>Building Utilization</h3>
+      <svg class="chart" viewBox="0 0 300 120">
+        <rect x="10" y="60" width="24" height="40" rx="4" fill="#2563EB" opacity=".85"/><text x="22" y="115" text-anchor="middle" font-size="8" fill="#64748B">A</text>
+        <rect x="44" y="60" width="24" height="40" rx="4" fill="#06B6D4" opacity=".85"/><text x="56" y="115" text-anchor="middle" font-size="8" fill="#64748B">B</text>
+        <rect x="78" y="40" width="24" height="60" rx="4" fill="#8B5CF6" opacity=".85"/><text x="90" y="115" text-anchor="middle" font-size="8" fill="#64748B">C</text>
+        <rect x="112" y="40" width="24" height="60" rx="4" fill="#16A34A" opacity=".85"/><text x="124" y="115" text-anchor="middle" font-size="8" fill="#64748B">D</text>
+        <rect x="146" y="40" width="24" height="60" rx="4" fill="#F59E0B" opacity=".85"/><text x="158" y="115" text-anchor="middle" font-size="8" fill="#64748B">L</text>
+        <rect x="180" y="100" width="24" height="0" rx="4" fill="#EF4444" opacity=".85"/><text x="192" y="115" text-anchor="middle" font-size="8" fill="#64748B">U</text>
+        <rect x="214" y="100" width="24" height="0" rx="4" fill="#94A3B8" opacity=".85"/><text x="226" y="115" text-anchor="middle" font-size="8" fill="#64748B">F</text>
+      </svg>
+    </div>
+  </div>
+  <div class="grid3">
+    <div class="glass"><h3>Recent Activity</h3>
+      <div style="margin-top:4px;font-size:9px;color:var(--muted)">
+        <div>10:45 Room C-204 90% occupied</div>
+        <div>10:42 Arjun Kumar @ Library</div>
+        <div>10:38 U-MAIN reserved (Tech Fest)</div>
+        <div>10:30 Lab D-201 maintenance</div>
+        <div>10:22 AI Workshop booked (V4)</div>
+      </div>
+    </div>
+    <div class="glass"><h3>Available Spaces</h3>
+      <div class="row"><div><div class="t">A-101</div><div class="s">60 seats</div></div><span class="chip g"><span class="dot"></span>Available</span></div>
+      <div class="row"><div><div class="t">A-301</div><div class="s">120 seats</div></div><span class="chip g"><span class="dot"></span>Available</span></div>
+      <div class="row"><div><div class="t">B-102</div><div class="s">35 seats</div></div><span class="chip g"><span class="dot"></span>Available</span></div>
+    </div>
+    <div class="glass"><h3>Quick Actions</h3>
+      <div style="margin-top:4px;display:grid;gap:4px">
+        <button class="btn">Find Classroom</button>
+        <button class="btn">Book Auditorium</button>
+        <button class="btn">Find Students</button>
+        <button class="btn">View Map</button>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:8px;font-size:9px;color:#94A3B8;text-align:center">NEXORA — One ecosystem. Every connection. • Simulated data</div>
+</div></body></html>
+```<|end|><|start|>tool_call_begin|xml<|message|><rfl:parameter name="command">
+cd C:\Users\saira\OneDrive\Documents\nexora; git add dashboard_compact.html; git commit -m "Add compact A4-friendly dashboard HTML" 2>&1; git push origin master 2>&1 | tail -3
