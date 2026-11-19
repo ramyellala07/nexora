@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NEXORA — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F7FB;--white:#FFFFFF;--blue:#2563EB;--blue2:#3B82F6;--cyan:#06B6D4;--violet:#8B5CF6;--ink:#172033;--muted:#64748B;--muted2:#94A3B8;--success:#16A34A;--warn:#F59E0B;--err:#EF4444;--radius:20px;--radius-sm:14px;--shadow:0 20px 50px rgba(31,45,90,.08),0 2px 8px rgba(31,45,90,.04);--glass-bg:linear-gradient(135deg,rgba(255,255,255,.78),rgba(255,255,255,.52));--glass-border:1px solid rgba(255,255,255,.7);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Space Grotesk',system-ui,sans-serif;letter-spacing:-.02em}
+.num{font-variant-numeric:tabular-nums}
+.bg-blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;animation:float 18s ease-in-out infinite}
+.blob.b1{width:520px;height:520px;background:radial-gradient(circle,#3B82F6,transparent 70%);top:-120px;left:-120px}
+.blob.b2{width:480px;height:480px;background:radial-gradient(circle,#8B5CF6,transparent 70%);bottom:-140px;right:-100px;animation-delay:-6s}
+.blob.b3{width:420px;height:420px;background:radial-gradient(circle,#06B6D4,transparent 70%);top:40%;left:50%;animation-delay:-12s;opacity:.35}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.08)}}
+.glass{background:var(--glass-bg);border:var(--glass-border);box-shadow:var(--shadow);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);border-radius:var(--radius)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.7)}
+.chip.blue{color:var(--blue);background:rgba(37,99,235,.08)}
+.chip.green{color:var(--success);background:rgba(22,163,74,.1)}
+.chip.amber{color:var(--warn);background:rgba(245,158,11,.1)}
+.chip.gray{color:var(--muted);background:rgba(100,116,139,.1)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot.green{background:var(--success)}.dot.blue{background:var(--blue2)}.dot.amber{background:var(--warn)}.dot.gray{background:var(--muted2)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;border:1px solid transparent;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s ease;background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;box-shadow:0 8px 24px rgba(37,99,235,.25)}
+.btn.ghost{background:rgba(255,255,255,.6);color:var(--ink);border:1px solid rgba(255,255,255,.7);box-shadow:none;backdrop-filter:blur(12px)}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:10px}
+.main{padding:24px 32px 40px;position:relative;z-index:1;max-width:1200px;margin:0 auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:16px;flex-wrap:wrap}
+.topbar .title{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700}
+.topbar .subtitle{font-size:13px;color:var(--muted);margin-top:2px}
+.topbar .actions{display:flex;align-items:center;gap:10px}
+.searchbox{display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:12px;background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(12px);min-width:260px}
+.searchbox input{border:none;background:transparent;outline:none;font-size:14px;color:var(--ink);width:100%}
+.searchbox svg{width:16px;height:16px;color:var(--muted)}
+.grid{display:grid;gap:18px}
+.grid.cols-6{grid-template-columns:repeat(6,1fr)}
+.grid.cols-2{grid-template-columns:repeat(2,1fr)}
+.grid.cols-3{grid-template-columns:repeat(3,1fr)}
+.card{padding:20px}
+.card h3{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin:0 0 4px}
+.card .meta{font-size:12px;color:var(--muted)}
+.metric{display:flex;flex-direction:column;gap:6px}
+.metric .val{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-.02em}
+.metric .lbl{font-size:13px;color:var(--muted);font-weight:500}
+.metric .delta{font-size:12px;font-weight:600;color:var(--muted)}
+.metric .iconwrap{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;margin-bottom:6px}
+.bar{height:6px;border-radius:999px;background:rgba(100,116,139,.15);overflow:hidden;flex:1}
+.bar .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.tag{font-size:11px;padding:3px 9px;border-radius:999px;background:rgba(37,99,235,.07);color:var(--blue);font-weight:500}
+.table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.table th{font-size:12px;color:var(--muted);font-weight:600;text-align:left;padding:0 14px 6px;text-transform:uppercase;letter-spacing:.05em}
+.table td{padding:12px 14px;background:rgba(255,255,255,.6);backdrop-filter:blur(8px);font-size:13px}
+.table tr td:first-child{border-radius:12px 0 0 12px}
+.table tr td:last-child{border-radius:0 12px 12px 0}
+.sim-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(245,158,11,.12);color:#92400e;font-size:11px;font-weight:700;letter-spacing:.04em}
+@media(max-width:900px){.grid.cols-6,.grid.cols-3{grid-template-columns:repeat(2,1fr)}.grid.cols-2{grid-template-columns:1fr}}
+@media(max-width:560px){.grid.cols-6,.grid.cols-3,.grid.cols-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bg-blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="title">Dashboard</div>
+      <div class="subtitle">Campus overview • Northstar University</div>
+    </div>
+    <div class="actions">
+      <div class="searchbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="Search rooms, people, buildings..."/></div>
+      <span class="sim-badge">● SIMULATED DATA</span>
+    </div>
+  </div>
+
+  <div class="grid cols-6" style="margin-bottom:18px">
+    <div class="glass card metric"><div class="iconwrap" style="background:#2563EB1a;color:#2563EB"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div><div class="val num">7</div><div class="lbl">Total Buildings</div><div class="delta">+0 this year</div></div>
+    <div class="glass card metric"><div class="iconwrap" style="background:#06B6D41a;color:#06B6D4"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div><div class="val num">23</div><div class="lbl">Total Classrooms</div><div class="delta">Across campus</div></div>
+    <div class="glass card metric"><div class="iconwrap" style="background:#8B5CF61a;color:#8B5CF6"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="val num">6</div><div class="lbl">Occupied Rooms</div><div class="delta">26% occupancy</div></div>
+    <div class="glass card metric"><div class="iconwrap" style="background:#16A34A1a;color:#16A34A"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div><div class="val num">13</div><div class="lbl">Vacant Rooms</div><div class="delta">Available now</div></div>
+    <div class="glass card metric"><div class="iconwrap" style="background:#F59E0B1a;color:#F59E0B"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg></div><div class="val num">3</div><div class="lbl">Available Auditoriums</div><div class="delta">Ready to book</div></div>
+    <div class="glass card metric"><div class="iconwrap" style="background:#3B82F61a;color:#3B82F6"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3v6l-5 9a2 2 0 001.7 3h12.6a2 2 0 001.7-3L15 9V3"/></svg></div><div class="val num">6</div><div class="lbl">Active Laboratories</div><div class="delta">In use today</div></div>
+  </div>
+
+  <div class="grid cols-2" style="margin-bottom:18px">
+    <div class="glass card">
+      <h3>Campus Occupancy Overview</h3><div class="meta">Live simulated snapshot</div>
+      <div style="display:flex;align-items:center;gap:24px;margin-top:14px">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="60" fill="none" stroke="rgba(100,116,139,.15)" stroke-width="14"/>
+          <circle cx="75" cy="75" r="60" fill="none" stroke="url(#g1)" stroke-width="14" stroke-dasharray="98 377" stroke-linecap="round" transform="rotate(-90 75 75)"/>
+          <defs><linearGradient id="g1"><stop offset="0" stop-color="#2563EB"/><stop offset="1" stop-color="#8B5CF6"/></linearGradient></defs>
+          <text x="75" y="72" text-anchor="middle" font-family="Space Grotesk" font-size="26" font-weight="700" fill="#172033">26%</text>
+          <text x="75" y="92" text-anchor="middle" font-size="11" fill="#64748B">occupied</text>
+        </svg>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Occupied</span><b>6</b></div>
+          <div class="bar" style="margin-bottom:12px"><div class="fill" style="width:26%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Vacant</span><b>13</b></div>
+          <div class="bar" style="margin-bottom:12px"><div class="fill" style="width:57%;background:linear-gradient(90deg,#16A34A,#06B6D4)"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Reserved</span><b>3</b></div>
+          <div class="bar"><div class="fill" style="width:13%;background:linear-gradient(90deg,#F59E0B,#EF4444)"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Building-wise Utilization</h3><div class="meta">Occupancy by block</div>
+      <div style="margin-top:14px">
+        <svg viewBox="0 0 400 220" style="width:100%;height:220px">
+          <!-- bars -->
+          <rect x="44" y="150" width="30" height="50" rx="6" fill="#2563EB" opacity=".85"/><text x="59" y="215" text-anchor="middle" font-size="10" fill="#64748B">A</text><text x="59" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#172033">25%</text>
+          <rect x="94" y="150" width="30" height="50" rx="6" fill="#06B6D4" opacity=".85"/><text x="109" y="215" text-anchor="middle" font-size="10" fill="#64748B">B</text><text x="109" y="145" text-anchor="middle" font-size="10" font-weight="600" fill="#172033">25%</text>
+          <rect x="144" y="130" width="30" height="70" rx="6" fill="#8B5CF6" opacity=".85"/><text x="159" y="215" text-anchor="middle" font-size="10" fill="#64748B">C</text><text x="159" y="125" text-anchor="middle" font-size="10" font-weight="600" fill="#172033">33%</text>
+          <rect x="194" y="130" width="30" height="70" rx="6" fill="#16A34A" opacity=".85"/><text x="209" y="215" text-anchor="middle" font-size="10" fill="#64748B">D</text><text x="209" y="125" text-anchor="middle" font-size="10" font-weight="600" fill="#172033">33%</text>
+          <rect x="244" y="130" width="30" height="70" rx="6" fill="#F59E0B" opacity=".85"/><text x="259" y="215" text-anchor="middle" font-size="10" fill="#64748B">L</text><text x="259" y="125" text-anchor="middle" font-size="10" font-weight="600" fill="#172033">33%</text>
+          <rect x="294" y="200" width="30" height="0" rx="6" fill="#EF4444" opacity=".85"/><text x="309" y="215" text-anchor="middle" font-size="10" fill="#64748B">U</text><text x="309" y="195" text-anchor="middle" font-size="10" font-weight="600" fill="#172033">0%</text>
+          <rect x="344" y="200" width="30" height="0" rx="6" fill="#94A3B8" opacity=".85"/><text x="359" y="215" text-anchor="middle" font-size="10" fill="#64748B">F</text><text x="359" y="195" text-anchor="middle" font-size="10" font-weight="600" fill="#172033">0%</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid cols-3" style="margin-bottom:18px">
+    <div class="glass card">
+      <h3>Recent Campus Activity</h3>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:11px;color:var(--muted);min-width:62px">10:45 AM</span><span style="font-size:13px">Room C-204 reached 90% occupancy</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:11px;color:var(--muted);min-width:62px">10:42 AM</span><span style="font-size:13px">Arjun Kumar verified at Central Library</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:11px;color:var(--muted);min-width:62px">10:38 AM</span><span style="font-size:13px">Venue U-MAIN reserved for Tech Fest</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:11px;color:var(--muted);min-width:62px">10:30 AM</span><span style="font-size:13px">Lab D-201 marked under maintenance</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:11px;color:var(--muted);min-width:62px">10:22 AM</span><span style="font-size:13px">New booking request: AI Workshop (V4)</span></div>
+        <div style="display:flex;gap:10px;align-items:flex-start"><span style="font-size:11px;color:var(--muted);min-width:62px">10:15 AM</span><span style="font-size:13px">Block B occupancy peaked at 85%</span></div>
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Available Spaces Now</h3>
+      <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.5)"><div><div style="font-weight:600;font-size:13px">A-101</div><div style="font-size:11px;color:var(--muted)">Block A – Administration • 60 seats</div></div><span class="chip green"><span class="dot green"></span>Available</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.5)"><div><div style="font-weight:600;font-size:13px">A-301</div><div style="font-size:11px;color:var(--muted)">Block A – Administration • 120 seats</div></div><span class="chip green"><span class="dot green"></span>Available</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.5)"><div><div style="font-weight:600;font-size:13px">B-102</div><div style="font-size:11px;color:var(--muted)">Block B – Electronics • 35 seats</div></div><span class="chip green"><span class="dot green"></span>Available</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.5)"><div><div style="font-weight:600;font-size:13px">B-201</div><div style="font-size:11px;color:var(--muted)">Block B – Electronics • 50 seats</div></div><span class="chip green"><span class="dot green"></span>Available</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.5)"><div><div style="font-weight:600;font-size:13px">B-202</div><div style="font-size:11px;color:var(--muted)">Block B – Electronics • 8 seats</div></div><span class="chip green"><span class="dot green"></span>Available</span></div>
+      </div>
+    </div>
+    <div class="glass card">
+      <h3>Quick Actions</h3>
+      <div style="margin-top:10px;display:grid;gap:8px">
+        <button class="btn ghost sm" style="justify-content:flex-start">Find a Classroom</button>
+        <button class="btn ghost sm" style="justify-content:flex-start">Book an Auditorium</button>
+        <button class="btn ghost sm" style="justify-content:flex-start">Find Students</button>
+        <button class="btn ghost sm" style="justify-content:flex-start">Find Faculty</button>
+        <button class="btn ghost sm" style="justify-content:flex-start">View Campus Map</button>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:24px;font-size:12px;color:#94A3B8;text-align:center">NEXORA — One ecosystem. Every connection. • All records are simulated demonstration data.</div>
+</div>
+</body>
+</html>
